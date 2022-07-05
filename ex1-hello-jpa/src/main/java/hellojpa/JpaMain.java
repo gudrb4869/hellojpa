@@ -96,7 +96,7 @@ public class JpaMain {
             // 스냅샷 : 영속성 컨텍스트에 최초로 들어온 상태*/
 
             //영속
-            Member member = em.find(Member.class, 150L);
+            /*Member member = em.find(Member.class, 150L);
             member.setName("AAAAA");
 
             //준영속 상태
@@ -105,7 +105,42 @@ public class JpaMain {
             em.clear(); // 영속성 컨텍스트를 통으로 초기화함.
             Member member2 = em.find(Member.class, 150L);//1차캐시에 아무것도 없기 때문에 select쿼리 다시실행.
 
-            System.out.println("================================");
+            System.out.println("================================");*/
+
+            /*Member member = new Member();
+//            member.setId("ID_A");
+            member.setUsername("C");
+//            member.setRoleType(RoleType.GUEST);
+
+            System.out.println("===============");
+
+            em.persist(member);// IDENTITY일 경우 pk를 DB insert시 생성하기 때문에 ID 전략이 IDENTITY일땐 em.persist시 insert 쿼리가 날아감.
+            // IDENTITY의 경우 영속성 컨텍스트에 모아서 쿼리 날리는 게 안된다는 단점 존재.
+
+            System.out.println("member.id = " + member.getId());
+            System.out.println("===============");*/
+
+            Member member1 = new Member();
+            member1.setUsername("A");
+
+            Member member2 = new Member();
+            member2.setUsername("B");
+
+            Member member3 = new Member();
+            member3.setUsername("C");
+
+            System.out.println("===============");
+
+            em.persist(member1); //1, 51
+            em.persist(member2); //MEM
+            em.persist(member3); //MEM
+
+            System.out.println("member1 = " + member1.getId());
+            System.out.println("member2 = " + member2.getId());
+            System.out.println("member3 = " + member3.getId());
+
+            System.out.println("===============");
+
             tx.commit(); //트랜잭션을 커밋하는 시점에 영속성 컨텍스트에 있는 애가 DB에 쿼리로 날라감.
         } catch (Exception e) {
             tx.rollback();
