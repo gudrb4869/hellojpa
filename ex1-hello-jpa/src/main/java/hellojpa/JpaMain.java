@@ -37,16 +37,76 @@ public class JpaMain {
 //            Member findMember = em.find(Member.class, 1L);
 //            em.remove(findMember);
 
-            List<Member> result = em.createQuery("select m from Member as m", Member.class)
-                    .setFirstResult(5)
-                    .setMaxResults(8)
-                    .getResultList();
+//            List<Member> result = em.createQuery("select m from Member as m", Member.class)
+//                    .setFirstResult(5)
+//                    .setMaxResults(8)
+//                    .getResultList();
+//
+//            for (Member member : result) {
+//                System.out.println("member.name = " + member.getName());
+//            }
 
-            for (Member member : result) {
-                System.out.println("member.name = " + member.getName());
-            }
+            //비영속 상태
+//            Member member = new Member();
+//            member.setId(101L);
+//            member.setName("HelloJPA");
+//
+//            //영속 상태
+//            System.out.println("=== BEFORE ===");
+//            em.persist(member);
+//            //회원 엔티티를 영속성 컨텍스트에서 분리, 준영속 상태
+////            em.detach(member);
+//            System.out.println("=== AFTER ===");
+//
+//            Member findMember = em.find(Member.class, 101L);
+//            // 조회할때 DB에 select 쿼리가 안나감 em.persist할때  1차 캐시에 저장되므로 DB에 쿼리 안날림.
+//            // DB에서 가져오는게 아니라 1차캐시에서 우선 가져옴
+//
+//            System.out.println("findMember.id = " + findMember.getId());
+//            System.out.println("findMember.name = " + findMember.getName());
 
-            tx.commit();
+            //영속
+//            Member findMember1 = em.find(Member.class, 101L); //DB에서 조회
+//            Member findMember2 = em.find(Member.class, 101L); //1차캐시에서 조회
+//
+//            System.out.println("result = " + (findMember1 == findMember2));
+
+            //영속
+            /*Member member1 = new Member(150L, "A");
+            Member member2 = new Member(160L, "B");
+
+            em.persist(member1);
+            em.persist(member2);
+
+            System.out.println("===========================");*/
+
+//            Member member = em.find(Member.class, 150L);
+//            member.setName("ZZZZZ");
+
+            /*Member member = new Member(200L, "member200");
+            em.persist(member);
+
+            em.flush(); //1차캐시는 그대로 유지. 쓰기 지연 SQL 저장소에 쌓인 쿼리들을 DB에 반영시킴
+            // 플러시 : 영속성 컨텍스트를 비우지 않음. 영속성 컨텍스트의 변경내용을 DB에 동기화.
+            // JPQL 쿼리 실행 시 플러시가 자동으로 실행. 따라서 JPQL 실행시 항상 1차 캐시를 무시하고 DB에 직접 SQL을 실행함. 그리고 실행 결과를 1차 캐시에 보관함.
+            // JPQL을 실행해서 DB에서 결과를 가져왔는데, 이미 1차 캐시에 동일한 식별자를 가진 엔티티가 있으면 DB에서 가져온 엔티티를 버리고 1차 캐시에 있는 엔티티를 유지함.
+
+            System.out.println("================================");
+//            em.persist(member); JPA는 자바 컬렉션의 값을 변경하는 것과 같음 그냥 값변경만 하면됨
+            // 스냅샷 : 영속성 컨텍스트에 최초로 들어온 상태*/
+
+            //영속
+            Member member = em.find(Member.class, 150L);
+            member.setName("AAAAA");
+
+            //준영속 상태
+//            em.detach(member);//select 쿼리만 나가고 update 쿼리가 안나감. 영속성 컨텍스트에서 관리안함.
+
+            em.clear(); // 영속성 컨텍스트를 통으로 초기화함.
+            Member member2 = em.find(Member.class, 150L);//1차캐시에 아무것도 없기 때문에 select쿼리 다시실행.
+
+            System.out.println("================================");
+            tx.commit(); //트랜잭션을 커밋하는 시점에 영속성 컨텍스트에 있는 애가 DB에 쿼리로 날라감.
         } catch (Exception e) {
             tx.rollback();
         } finally {

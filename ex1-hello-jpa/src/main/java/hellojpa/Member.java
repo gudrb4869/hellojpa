@@ -10,6 +10,14 @@ public class Member {
     private Long id;
     private String name;
 
+    // JPA는 기본생성자 하나있어야함. public으로 굳이 안해도 되긴함
+    public Member() {}
+
+    public Member(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }
