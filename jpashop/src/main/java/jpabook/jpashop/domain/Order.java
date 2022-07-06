@@ -17,6 +17,10 @@ public class Order {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
+    @OneToOne
+    @JoinColumn(name = "DELIVERY_ID")
+    private Delivery delivery;
+
     // 비즈니스 설계에 따라 주문서에서 주문상품내역을 확인할 일이 많기 때문에 List 추가해줄 수도 있음.
     @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItems = new ArrayList<>();
