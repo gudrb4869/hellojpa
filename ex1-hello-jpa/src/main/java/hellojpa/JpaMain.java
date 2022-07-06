@@ -120,7 +120,7 @@ public class JpaMain {
             System.out.println("member.id = " + member.getId());
             System.out.println("===============");*/
 
-            Member member1 = new Member();
+            /*Member member1 = new Member();
             member1.setUsername("A");
 
             Member member2 = new Member();
@@ -139,7 +139,56 @@ public class JpaMain {
             System.out.println("member2 = " + member2.getId());
             System.out.println("member3 = " + member3.getId());
 
-            System.out.println("===============");
+            System.out.println("===============");*/
+
+            //저장
+            /*Team team = new Team();
+            team.setName("TeamA");
+            em.persist(team);
+
+            Member member = new Member();
+            member.setUsername("member1");
+            member.setTeam(team);
+            em.persist(member);
+
+            em.flush();
+            em.clear();
+
+            Member findMember = em.find(Member.class, member.getId());
+            List<Member> members = findMember.getTeam().getMembers();
+
+            for (Member m : members) {
+                System.out.println("m = " + m.getUsername());
+            }*/
+            /*Team findTeam = findMember.getTeam();
+            System.out.println("findTeam = " + findTeam.getName());
+
+            //
+            Team newTeam = em.find(Team.class, 100L);
+            findMember.setTeam(newTeam);*/
+
+            Team team = new Team();
+            team.setName("TeamA");
+//            team.getMembers().add(member);
+            em.persist(team);
+
+            Member member = new Member();
+            member.setUsername("member1");
+            em.persist(member);
+
+            team.addMember(member);
+
+            em.flush();
+            em.clear();
+
+            Team findTeam = em.find(Team.class, team.getId());
+            List<Member> members = findTeam.getMembers();
+
+            System.out.println("========================");
+            for (Member m : members) {
+                System.out.println("m = " + m.getUsername());
+            }
+            System.out.println("========================");
 
             tx.commit(); //트랜잭션을 커밋하는 시점에 영속성 컨텍스트에 있는 애가 DB에 쿼리로 날라감.
         } catch (Exception e) {

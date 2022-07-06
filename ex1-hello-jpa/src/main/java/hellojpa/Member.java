@@ -6,8 +6,8 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
-@SequenceGenerator(name = "member_seq_generator", sequenceName = "member_seq",
-        initialValue = 1, allocationSize = 50)
+/*@SequenceGenerator(name = "member_seq_generator", sequenceName = "member_seq",
+        initialValue = 1, allocationSize = 50)*/
 /*@TableGenerator(
         name = "MEMBER_SEQ_GENERATOR",
         table = "MY_SEQUENCES",
@@ -15,13 +15,23 @@ import java.util.Date;
 public class Member {
 
     @Id //pk를 매핑
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq_generator")
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq_generator")
 //    @GeneratedValue(strategy = GenerationType.TABLE, generator = "MEMBER_SEQ_GENERATOR")
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
+    @Column(name = "MEMBER_ID")
     private Long id;
 
-    @Column(name = "name", nullable = false) // db컬럼명은 name
+//    @Column(name = "name", nullable = false) // db컬럼명은 name
+    @Column(name = "USERNAME")
     private String username;
+
+    /*@Column(name = "TEAM_ID")
+    private Long teamId;*/
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TEAM_ID")
+    private Team team;
 
     /*private int age;
 
@@ -44,7 +54,7 @@ public class Member {
     private int temp;*/
 
     // JPA는 기본생성자 하나있어야함. public 또는 protected 생성자
-    public Member() {}
+
 
     public Long getId() {
         return id;
@@ -60,5 +70,22 @@ public class Member {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", team=" + team +
+                '}';
     }
 }
