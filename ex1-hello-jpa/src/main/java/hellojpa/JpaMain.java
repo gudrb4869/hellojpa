@@ -167,7 +167,7 @@ public class JpaMain {
             Team newTeam = em.find(Team.class, 100L);
             findMember.setTeam(newTeam);*/
 
-            Team team = new Team();
+            /*Team team = new Team();
             team.setName("TeamA");
 //            team.getMembers().add(member);
             em.persist(team);
@@ -188,7 +188,19 @@ public class JpaMain {
             for (Member m : members) {
                 System.out.println("m = " + m.getUsername());
             }
-            System.out.println("========================");
+            System.out.println("========================");*/
+
+            Member member = new Member();
+            member.setUsername("member1");
+
+            em.persist(member);
+
+            Team team = new Team();
+            team.setName("teamA");
+            //
+            team.getMembers().add(member);
+
+            em.persist(team);
 
             tx.commit(); //트랜잭션을 커밋하는 시점에 영속성 컨텍스트에 있는 애가 DB에 쿼리로 날라감.
         } catch (Exception e) {
