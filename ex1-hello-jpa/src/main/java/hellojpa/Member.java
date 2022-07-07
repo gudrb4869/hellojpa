@@ -35,13 +35,13 @@ public class Member extends BaseEntity {
 //    @JoinColumn(name = "TEAM_ID")
 //    private Team team;
 
-    @ManyToOne
-    @JoinColumn(name = "TEAM_ID", insertable = false, updatable = false) // 일대다 양방향 읽기 전용 필드. 다대일 양방향 사용을 권장.
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TEAM_ID"/*, insertable = false, updatable = false*/) // 일대다 양방향 읽기 전용 필드. 다대일 양방향 사용을 권장.
     private Team team;
 
-    @OneToOne
+    /*@OneToOne
     @JoinColumn(name = "LOCKER_ID")
-    private Locker locker;
+    private Locker locker;*/
 
     /*@ManyToMany
     @JoinTable(name = "MEMBER_PRODUCT")
@@ -49,6 +49,30 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member")
     private List<MemberProduct> memberProducts = new ArrayList<>();
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
 
     /*private int age;
 
@@ -72,31 +96,6 @@ public class Member extends BaseEntity {
 
     // JPA는 기본생성자 하나있어야함. public 또는 protected 생성자
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-//    public Team getTeam() {
-//        return team;
-//    }
-//
-//    public void setTeam(Team team) {
-//        this.team = team;
-//    }
-//
 //    @Override
 //    public String toString() {
 //        return "Member{" +

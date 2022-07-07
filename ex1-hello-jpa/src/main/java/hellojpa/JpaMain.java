@@ -1,5 +1,7 @@
 package hellojpa;
 
+import org.hibernate.Hibernate;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -217,7 +219,7 @@ public class JpaMain {
             Item item = em.find(Item.class, movie.getId());
             System.out.println("item = " + item);*/
 
-            Member member = new Member();
+            /*Member member = new Member();
             member.setUsername("user1");
             member.setCreatedBy("kim");
             member.setCreatedDate(LocalDateTime.now());
@@ -225,15 +227,132 @@ public class JpaMain {
             em.persist(member);
 
             em.flush();
+            em.clear();*/
+
+            /*Member member = new Member();
+            member.setUsername("hello");
+
+            em.persist(member);
+
+            em.flush();
             em.clear();
+
+//            Member findMember = em.find(Member.class, member.getId());
+            Member findMember = em.getReference(Member.class, member.getId());
+            System.out.println("before findMember = " + findMember.getClass());
+            System.out.println("findMember.username = " + findMember.getUsername());
+            System.out.println("after findMember = " + findMember.getClass());*/
+
+//            Team team = new Team();
+//            team.setName("teamA");
+//            em.persist(team);
+//
+//            Team teamB = new Team();
+//            teamB.setName("teamB");
+//            em.persist(teamB);
+//
+//            Member member1 = new Member();
+//            member1.setUsername("member1");
+//            member1.setTeam(team);
+//            em.persist(member1);
+//
+//            Member member2 = new Member();
+//            member2.setUsername("member2");
+//            member2.setTeam(teamB);
+//            em.persist(member2);
+
+//            Member member2 = new Member();
+//            member2.setUsername("member2");
+//            em.persist(member2);
+
+//            em.flush();
+//            em.clear();
+
+//            Member m = em.find(Member.class, member1.getId());
+//
+//            System.out.println("m = " + m.getTeam().getClass());
+//
+//            System.out.println("=============");
+//            System.out.println("teamName = " + m.getTeam().getName()); //초기화
+//            System.out.println("=============");
+
+//            List<Member> members = em.createQuery("select m from Member m join fetch m.team", Member.class)
+//                    .getResultList();
+            //@ManyToOne, @OneToOne은 EAGER가 기본값(즉시 로딩) -> LAZY로 설정!
+            //@OneToMany, @ManyToMany는 LAZY가 기본값(지연 로딩)
+            //실무에서는 모든 연관관계에 지연 로딩을 사용하자!
+            //즉시 로딩 이용시 JPQL 로 쿼리날리면 N + 1문제 발생
+            //SQL: select * from Member
+            //SQL: select * from Team where TEAM_ID = xxx
+
+
+//            Member refMember = em.getReference(Member.class, member1.getId());
+//            System.out.println("refMember = " + refMember.getClass()); //proxy
+//            Hibernate.initialize(refMember); //강제 초기화 (Hibernate에만 있는 메소드, JPA 표준에는 없음. refMember.getName()과 같이 써야함)
+
+//            System.out.println("isLoaded = " + emf.getPersistenceUnitUtil().isLoaded(refMember));
+
+//            em.detach(refMember);
+//            em.close();
+//            em.clear();
+
+//            refMember.getUsername();
+
+//            Member reference = em.find(Member.class, member1.getId());
+//            System.out.println("reference = " + reference.getClass());
+//
+//            System.out.println("a == a: " + (m1 == reference));
+
+//            Member m2 = em.getReference(Member.class, member2.getId());
+
+//            logic(m1, m2);
+
+            /**
+             * 프록시 객체는 처음 사용할 때 한번만 초기화.
+             * 프록시 객체를 초기화 할 때, 프록시 객체가 실제 엔티티로 바뀌는 것은 아님. 초기화되면 프록시 객체를 통해서 실제 엔티티에 접근 가능
+             * * 프록시 객체는 원본 엔티티를 상속 받음. 따라서 타입 체크시 주의해야함 ( == 비교 실패, 대신 instance of 사용)
+             * * 영속성 컨텍스트에 찾는 엔티티가 이미 있으면 em.getReference()를 호출해도 실제 엔티티 반환
+             *
+             */
+
+            Child child1 = new Child();
+            Child child2 = new Child();
+
+            Parent parent = new Parent();
+            parent.addChild(child1);
+            parent.addChild(child2);
+
+            em.persist(parent);
+            em.persist(child1);
+            em.persist(child2);
+
+            em.flush();
+            em.clear();
+
+            Parent findParent = em.find(Parent.class, parent.getId());
+            findParent.getChildList().remove(0);
+//            em.remove(findParent);
+
+            /**
+             * 영속성 전이, 고아 객체 : 참조하는 곳이 하나일 때 사용해야 함!
+             * CascadeType.ALL + orphanRemoval=true 두 옵션 모두 활성화하면
+             * 부모엔티티를 통해서 자식엔티티의 생명주기 관리 가능
+             */
 
             tx.commit(); //트랜잭션을 커밋하는 시점에 영속성 컨텍스트에 있는 애가 DB에 쿼리로 날라감.
         } catch (Exception e) {
             tx.rollback();
+            e.printStackTrace();
         } finally {
             em.close();
         }
 
         emf.close();
     }
+
+    /*private static void logic(Member m1, Member m2) {
+        System.out.println("m1 == m2: " + (m1 instanceof Member));
+        System.out.println("m1 == m2: " + (m2 instanceof Member));
+
+    }*/
 }
