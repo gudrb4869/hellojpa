@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.CascadeType.*;
+import static javax.persistence.FetchType.*;
+
 @Entity
 @Table(name = "ORDERS")
 public class Order extends BaseEntity {
@@ -13,16 +16,16 @@ public class Order extends BaseEntity {
     @Column(name = "ORDER_ID")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    @OneToOne
+    @OneToOne(fetch = LAZY, cascade = ALL)
     @JoinColumn(name = "DELIVERY_ID")
     private Delivery delivery;
 
     // 비즈니스 설계에 따라 주문서에서 주문상품내역을 확인할 일이 많기 때문에 List 추가해줄 수도 있음.
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     private LocalDateTime orderDate;
